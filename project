@@ -1,0 +1,113 @@
+namespace WindowsFormsApp33
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+            textBox2.PasswordChar = '*';
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string login = textBox1.Text.Trim();
+            string password = textBox2.Text.Trim();
+
+
+            if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
+            {
+                MessageBox.Show("Пожалуйста, заполните все поля");
+                return;
+            }
+
+
+            if (!userDatabase.ContainsKey(login))
+            {
+
+                userDatabase.Add(login, password);
+                MessageBox.Show($"Профиль '{login}' успешно создан и сохранен");
+                GoToProfile(login);
+            }
+            else
+            {
+
+                if (userDatabase[login] == password)
+                {
+                    GoToProfile(login);
+                }
+                else
+                {
+                    MessageBox.Show("Неверный пароль для этого профиля");
+                }
+            }
+        }
+        private void GoToProfile(string user)
+        {
+            
+            Form2 profileForm = new Form2(user);
+            profileForm.Show();
+
+           
+            this.Hide();
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
+
+namespace WishlistApp
+{
+    public partial class Form1 : Form
+    {
+        // База пользователей: Логин - Пароль
+        private static Dictionary<string, string> users = new Dictionary<string, string>();
+
+        public Form1()
+        {
+            InitializeComponent();
+            textBox2.PasswordChar = '*'; // Скрываем пароль
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string login = textBox1.Text.Trim();
+            string password = textBox2.Text.Trim();
+
+            if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
+            {
+                MessageBox.Show("Заполните поля!");
+                return;
+            }
+
+            // 1. Проверяем или регистрируем пользователя
+            if (!users.ContainsKey(login))
+            {
+                users.Add(login, password);
+            }
+
+            if (users[login] == password)
+            {
+                // --- ВОТ ТУТ ПРОИСХОДИТ СВЯЗЬ ---
+                // Создаем Form2 и передаем в неё логин
+                Form2 f2 = new Form2(login); 
+                
+                f2.Show();    // Показываем вторую форму
+                this.Hide();  // Прячем форму логина
+            }
+            else
+            {
+                MessageBox.Show("Неверный пароль!");
+            }
+        }
+    }
+}
